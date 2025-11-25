@@ -1,20 +1,49 @@
 /* USER CODE BEGIN Header */
-/**
-  ******************************************************************************
-  * @file           : main.c
-  * @brief          : Main program body
-  ******************************************************************************
-  * @attention
-  *
-  * Copyright (c) 2025 STMicroelectronics.
-  * All rights reserved.
-  *
-  * This software is licensed under terms that can be found in the LICENSE file
-  * in the root directory of this software component.
-  * If no LICENSE file comes with this software, it is provided AS-IS.
-  *
-  ******************************************************************************
-  */
+/******************************************************************************
+ *  文件名称        : main.c
+ *  作者            : 青山
+ *  创建日期        : 2025-11-25
+ *  最后修改日期    : 
+ *  文件描述        : bootloader引导加载程序
+ *
+ *  ----------------------------------------------------------------------------
+ *  修改记录:
+ *  日期           作者        版本号     修改内容
+ *  2025-11-25    青山         1.0.0      初始创建
+ *
+ ******************************************************************************/
+/******************************************************************************
+ *  Bootloader / 应用程序 地址布局说明
+ *
+ *  Flash 地址分布（基于 64KB Flash 的 STM32F103C8T6）：
+ *
+ *  ┌───────────────────────────────────────────────────────────────┐
+ *  │  Bootloader 区域（16 KB）                                     │
+ *  │  地址：0x08000000 ~ 0x08003FFF                                │
+ *  └───────────────────────────────────────────────────────────────┘
+ *
+ *  ┌───────────────────────────────────────────────────────────────┐
+ *  │  升级标志区 + 版本号（1 KB）                                    │
+ *  │  地址：0x08004000 ~ 0x080043FF                                │
+ *  │  - upgrade_flag (需要升级则写入 0x01)                          │
+ *  │  - firmware_version (如 0x00010000 → V1.0.0)                  │
+ *  └───────────────────────────────────────────────────────────────┘
+ *
+ *  ┌───────────────────────────────────────────────────────────────┐
+ *  │  应用程序区域（约 47 KB）                                       │
+ *  │  地址：0x08004400 ~ 0x0800FFFF                                 │
+ *  └───────────────────────────────────────────────────────────────┘
+ *
+ *  Bootloader 跳转逻辑：
+ *  1. 上电 → Bootloader 启动
+ *  2. 读取 0x08004000 的 upgrade_flag
+ *  3. 如果 upgrade_flag == 1：
+ *       → 进入 OTA/ESP8266 升级流程
+ *     否则：
+ *       → 跳转到应用程序 (0x08004400)
+ *
+ ******************************************************************************/
+
 /* USER CODE END Header */
 /* Includes ------------------------------------------------------------------*/
 #include "main.h"
@@ -23,6 +52,8 @@
 
 /* Private includes ----------------------------------------------------------*/
 /* USER CODE BEGIN Includes */
+#include <stdio.h>
+#include <string.h>
 #include "my_log.h"
 /* USER CODE END Includes */
 
@@ -33,7 +64,8 @@
 
 /* Private define ------------------------------------------------------------*/
 /* USER CODE BEGIN PD */
-
+#define UPGRADE_INFO_ADDR       0x08003C00        //升级信息存储地址
+#define ETX_APP_START_ADDRESS   0x08004400        //application 起始地址
 /* USER CODE END PD */
 
 /* Private macro -------------------------------------------------------------*/
@@ -44,7 +76,20 @@
 /* Private variables ---------------------------------------------------------*/
 
 /* USER CODE BEGIN PV */
+typedef struct{
+  uint32_t upgrade_flag;   // 0xAAAAAAAA = 需要升级, 0xFFFFFFFF = 未升级
+  uint32_t h_version;       // 主版本号
+  uint32_t l_version;       // 次版本号
+  uint32_t reserved[4];    // 预留给以后使用
+}upgrade_info_t;
 
+upgrade_info_t g_upgrade_info;
+upgrade_info_t init_version = {
+  0x00000000,
+  1,
+  0,
+  {0xffffffff, 0xffffffff, 0xffffffff, 0xffffffff}
+};
 /* USER CODE END PV */
 
 /* Private function prototypes -----------------------------------------------*/
@@ -55,7 +100,8 @@ void SystemClock_Config(void);
 
 /* Private user code ---------------------------------------------------------*/
 /* USER CODE BEGIN 0 */
-
+void ReadUpgradeInfo(void);
+void WriteUpgradeInfo(upgrade_info_t *info);
 /* USER CODE END 0 */
 
 /**
@@ -91,20 +137,23 @@ int main(void)
   MX_USART2_UART_Init();
   /* USER CODE BEGIN 2 */
 	log_init(&huart1);
+  ReadUpgradeInfo();
+  if(g_upgrade_info.upgrade_flag == 0xffffffff)
+  {
+    WriteUpgradeInfo(&init_version);
+    ReadUpgradeInfo();
+  }
+  LOG_INFO("Version:%d.%d", g_upgrade_info.h_version, g_upgrade_info.l_version);
+
+  
   /* USER CODE END 2 */
 
   /* Infinite loop */
   /* USER CODE BEGIN WHILE */
+  
   while (1)
   {
-		LOG_INFO("INFO");
-		HAL_Delay(1000);
-		LOG_WARN("WARN");
-		HAL_Delay(1000);
-		LOG_DEBUG("DEBUG");
-		HAL_Delay(1000);
-		LOG_ERROR("ERROR");
-		HAL_Delay(1000);
+		
     /* USER CODE END WHILE */
 
     /* USER CODE BEGIN 3 */
@@ -152,6 +201,37 @@ void SystemClock_Config(void)
 }
 
 /* USER CODE BEGIN 4 */
+void ReadUpgradeInfo(void)
+{
+  memcpy(&g_upgrade_info, (void*)UPGRADE_INFO_ADDR, sizeof(upgrade_info_t));
+}
+
+void WriteUpgradeInfo(upgrade_info_t *info)
+{
+    HAL_FLASH_Unlock();
+
+    // 1. 擦除 1KB 页
+    FLASH_EraseInitTypeDef erase;
+    uint32_t PageError;
+
+    erase.TypeErase   = FLASH_TYPEERASE_PAGES;
+    erase.PageAddress = UPGRADE_INFO_ADDR;
+    erase.NbPages     = 1;
+
+    HAL_FLASHEx_Erase(&erase, &PageError);
+
+    // 2. 写入结构体
+    uint32_t *data = (uint32_t *)info;
+    uint32_t addr  = UPGRADE_INFO_ADDR;
+
+    for (int i = 0; i < sizeof(upgrade_info_t) / 4; i++)
+    {
+        HAL_FLASH_Program(FLASH_TYPEPROGRAM_WORD, addr, data[i]);
+        addr += 4;
+    }
+
+    HAL_FLASH_Lock();
+}
 
 /* USER CODE END 4 */
 
