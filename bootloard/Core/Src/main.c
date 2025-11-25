@@ -52,9 +52,8 @@
 
 /* Private includes ----------------------------------------------------------*/
 /* USER CODE BEGIN Includes */
-#include <stdio.h>
-#include <string.h>
 #include "my_log.h"
+#include "bootloard.h"
 /* USER CODE END Includes */
 
 /* Private typedef -----------------------------------------------------------*/
@@ -64,8 +63,7 @@
 
 /* Private define ------------------------------------------------------------*/
 /* USER CODE BEGIN PD */
-#define UPGRADE_INFO_ADDR       0x08003C00        //升级信息存储地址
-#define ETX_APP_START_ADDRESS   0x08004400        //application 起始地址
+       //application 起始地址
 /* USER CODE END PD */
 
 /* Private macro -------------------------------------------------------------*/
@@ -76,20 +74,7 @@
 /* Private variables ---------------------------------------------------------*/
 
 /* USER CODE BEGIN PV */
-typedef struct{
-  uint32_t upgrade_flag;   // 0xAAAAAAAA = 需要升级, 0xFFFFFFFF = 未升级
-  uint32_t h_version;       // 主版本号
-  uint32_t l_version;       // 次版本号
-  uint32_t reserved[4];    // 预留给以后使用
-}upgrade_info_t;
-
-upgrade_info_t g_upgrade_info;
-upgrade_info_t init_version = {
-  0x00000000,
-  1,
-  0,
-  {0xffffffff, 0xffffffff, 0xffffffff, 0xffffffff}
-};
+extern upgrade_info_t g_upgrade_info;
 /* USER CODE END PV */
 
 /* Private function prototypes -----------------------------------------------*/
@@ -100,8 +85,7 @@ void SystemClock_Config(void);
 
 /* Private user code ---------------------------------------------------------*/
 /* USER CODE BEGIN 0 */
-void ReadUpgradeInfo(void);
-void WriteUpgradeInfo(upgrade_info_t *info);
+
 /* USER CODE END 0 */
 
 /**
@@ -137,14 +121,25 @@ int main(void)
   MX_USART2_UART_Init();
   /* USER CODE BEGIN 2 */
 	log_init(&huart1);
-  ReadUpgradeInfo();
-  if(g_upgrade_info.upgrade_flag == 0xffffffff)
-  {
-    WriteUpgradeInfo(&init_version);
-    ReadUpgradeInfo();
-  }
+  
+  CheckVersion();
   LOG_INFO("Version:%d.%d", g_upgrade_info.h_version, g_upgrade_info.l_version);
 
+  if(g_upgrade_info.upgrade_flag == 0xaaaaaaaa)
+  {
+    LOG_INFO("Ready to start updating......");
+		
+		
+		
+		
+		
+		
+    ClearUpgradeFlag();
+  }else
+  {
+    LOG_INFO("Jump to Application......");
+    goto_application();
+  }
   
   /* USER CODE END 2 */
 
@@ -201,37 +196,6 @@ void SystemClock_Config(void)
 }
 
 /* USER CODE BEGIN 4 */
-void ReadUpgradeInfo(void)
-{
-  memcpy(&g_upgrade_info, (void*)UPGRADE_INFO_ADDR, sizeof(upgrade_info_t));
-}
-
-void WriteUpgradeInfo(upgrade_info_t *info)
-{
-    HAL_FLASH_Unlock();
-
-    // 1. 擦除 1KB 页
-    FLASH_EraseInitTypeDef erase;
-    uint32_t PageError;
-
-    erase.TypeErase   = FLASH_TYPEERASE_PAGES;
-    erase.PageAddress = UPGRADE_INFO_ADDR;
-    erase.NbPages     = 1;
-
-    HAL_FLASHEx_Erase(&erase, &PageError);
-
-    // 2. 写入结构体
-    uint32_t *data = (uint32_t *)info;
-    uint32_t addr  = UPGRADE_INFO_ADDR;
-
-    for (int i = 0; i < sizeof(upgrade_info_t) / 4; i++)
-    {
-        HAL_FLASH_Program(FLASH_TYPEPROGRAM_WORD, addr, data[i]);
-        addr += 4;
-    }
-
-    HAL_FLASH_Lock();
-}
 
 /* USER CODE END 4 */
 

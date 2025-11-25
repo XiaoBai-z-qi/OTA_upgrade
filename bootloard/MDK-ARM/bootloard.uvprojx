@@ -336,7 +336,7 @@
               <MiscControls></MiscControls>
               <Define>USE_HAL_DRIVER,STM32F103xB</Define>
               <Undefine></Undefine>
-              <IncludePath>../Core/Inc;../Drivers/STM32F1xx_HAL_Driver/Inc;../Drivers/STM32F1xx_HAL_Driver/Inc/Legacy;../Drivers/CMSIS/Device/ST/STM32F1xx/Include;../Drivers/CMSIS/Include;..\Private</IncludePath>
+              <IncludePath>../Core/Inc;../Drivers/STM32F1xx_HAL_Driver/Inc;../Drivers/STM32F1xx_HAL_Driver/Inc/Legacy;../Drivers/CMSIS/Device/ST/STM32F1xx/Include;../Drivers/CMSIS/Include;..\Private;..\System</IncludePath>
             </VariousControls>
           </Cads>
           <Aads>
@@ -504,6 +504,21 @@
               <FileName>my_log.h</FileName>
               <FileType>5</FileType>
               <FilePath>..\Private\my_log.h</FilePath>
+            </File>
+          </Files>
+        </Group>
+        <Group>
+          <GroupName>System</GroupName>
+          <Files>
+            <File>
+              <FileName>bootloard.c</FileName>
+              <FileType>1</FileType>
+              <FilePath>..\System\bootloard.c</FilePath>
+            </File>
+            <File>
+              <FileName>bootloard.h</FileName>
+              <FileType>5</FileType>
+              <FilePath>..\System\bootloard.h</FilePath>
             </File>
           </Files>
         </Group>
