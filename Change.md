@@ -12,3 +12,17 @@
     - l_version：0x08004008
     - reserved：0x0800400C ~ 0x0800401F (保留，将来可能用的上)
   - 应用程序区域：0x08004400 ~ 0x0800FFFF（剩余 47 KB）
+
+
+
+## 2025-11-25 - 11-26
+
+### Added
+
+- 添加==bootloard.c/.h==文件
+
+- 添加goto_application函数 ---- 跳转至Application应用程序
+
+- bootloard整体框架搭好
+
+  

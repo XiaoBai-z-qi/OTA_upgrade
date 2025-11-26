@@ -128,11 +128,7 @@ int main(void)
   if(g_upgrade_info.upgrade_flag == 0xaaaaaaaa)
   {
     LOG_INFO("Ready to start updating......");
-		
-		
-		
-		
-		
+		FirmwareUpdate();
 		
     ClearUpgradeFlag();
   }else
