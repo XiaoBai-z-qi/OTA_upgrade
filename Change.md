@@ -20,9 +20,15 @@
 ### Added
 
 - 添加==bootloard.c/.h==文件
-
 - 添加goto_application函数 ---- 跳转至Application应用程序
-
 - bootloard整体框架搭好
 
-  
+
+
+## 2025-11-26
+
+### Added
+
+- 将最小堆栈大小设置为0x800
+- 创建应用程序
+
