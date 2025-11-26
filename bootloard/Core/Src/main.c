@@ -131,6 +131,8 @@ int main(void)
 		FirmwareUpdate();
 		
     ClearUpgradeFlag();
+    LOG_INFO("Update Version:%d.%d", g_upgrade_info.h_version, g_upgrade_info.l_version);
+		goto_application();
   }else
   {
     LOG_INFO("Jump to Application......");

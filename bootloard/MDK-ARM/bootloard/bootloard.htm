@@ -3,9 +3,9 @@
 <title>Static Call Graph - [bootloard\bootloard.axf]</title></head>
 <body><HR>
 <H1>Static Call Graph for image bootloard\bootloard.axf</H1><HR>
-<BR><P>#&#060CALLGRAPH&#062# ARM Linker, 5060528: Last Updated: Wed Nov 26 09:15:12 2025
+<BR><P>#&#060CALLGRAPH&#062# ARM Linker, 5060528: Last Updated: Wed Nov 26 10:48:17 2025
 <BR><P>
-<H3>Maximum Stack Usage =       1592 bytes + Unknown(Functions without stacksize, Cycles, Untraceable Function Pointers)</H3><H3>
+<H3>Maximum Stack Usage =       1600 bytes + Unknown(Functions without stacksize, Cycles, Untraceable Function Pointers)</H3><H3>
 Call chain for Maximum Stack Depth:</H3>
 __rt_entry_main &rArr; main &rArr; FirmwareUpdate &rArr; write_data_to_flash_app &rArr; log_impl &rArr; __2snprintf &rArr; _printf_char_common &rArr; __printf
 <P>
@@ -368,7 +368,7 @@ Global Symbols
 <P><STRONG><a name="[f2]"></a>__rt_entry_postsh_1</STRONG> (Thumb, 0 bytes, Stack size unknown bytes, __rtentry2.o(.ARM.Collect$$rtentry$$00000009))
 
 <P><STRONG><a name="[6e]"></a>__rt_entry_main</STRONG> (Thumb, 0 bytes, Stack size unknown bytes, __rtentry2.o(.ARM.Collect$$rtentry$$0000000D))
-<BR><BR>[Stack]<UL><LI>Max Depth = 1592 + Unknown Stack Size
+<BR><BR>[Stack]<UL><LI>Max Depth = 1600 + Unknown Stack Size
 <LI>Call Chain = __rt_entry_main &rArr; main &rArr; FirmwareUpdate &rArr; write_data_to_flash_app &rArr; log_impl &rArr; __2snprintf &rArr; _printf_char_common &rArr; __printf
 </UL>
 <BR>[Calls]<UL><LI><a href="#[6f]">&gt;&gt;</a>&nbsp;&nbsp;&nbsp;main
@@ -532,7 +532,7 @@ Global Symbols
 </UL>
 
 <P><STRONG><a name="[ae]"></a>__aeabi_llsr</STRONG> (Thumb, 0 bytes, Stack size 0 bytes, llushr.o(.text))
-<BR><BR>[Called By]<UL><LI><a href="#[a1]">&gt;&gt;</a>&nbsp;&nbsp;&nbsp;HAL_FLASH_Program
+<BR><BR>[Called By]<UL><LI><a href="#[a2]">&gt;&gt;</a>&nbsp;&nbsp;&nbsp;HAL_FLASH_Program
 </UL>
 
 <P><STRONG><a name="[f5]"></a>_ll_ushift_r</STRONG> (Thumb, 38 bytes, Stack size 0 bytes, llushr.o(.text), UNUSED)
@@ -1015,12 +1015,13 @@ Global Symbols
 <BR>[Called By]<UL><LI><a href="#[6f]">&gt;&gt;</a>&nbsp;&nbsp;&nbsp;main
 </UL>
 
-<P><STRONG><a name="[9e]"></a>ClearUpgradeFlag</STRONG> (Thumb, 86 bytes, Stack size 64 bytes, bootloard.o(i.ClearUpgradeFlag))
+<P><STRONG><a name="[9e]"></a>ClearUpgradeFlag</STRONG> (Thumb, 100 bytes, Stack size 64 bytes, bootloard.o(i.ClearUpgradeFlag))
 <BR><BR>[Stack]<UL><LI>Max Depth = 120<LI>Call Chain = ClearUpgradeFlag &rArr; HAL_FLASH_Program &rArr; FLASH_WaitForLastOperation
 </UL>
 <BR>[Calls]<UL><LI><a href="#[9f]">&gt;&gt;</a>&nbsp;&nbsp;&nbsp;HAL_FLASH_Unlock
-<LI><a href="#[a1]">&gt;&gt;</a>&nbsp;&nbsp;&nbsp;HAL_FLASH_Program
-<LI><a href="#[a2]">&gt;&gt;</a>&nbsp;&nbsp;&nbsp;HAL_FLASH_Lock
+<LI><a href="#[a2]">&gt;&gt;</a>&nbsp;&nbsp;&nbsp;HAL_FLASH_Program
+<LI><a href="#[a1]">&gt;&gt;</a>&nbsp;&nbsp;&nbsp;HAL_FLASH_Lock
+<LI><a href="#[9c]">&gt;&gt;</a>&nbsp;&nbsp;&nbsp;ReadUpgradeInfo
 <LI><a href="#[a0]">&gt;&gt;</a>&nbsp;&nbsp;&nbsp;HAL_FLASHEx_Erase
 </UL>
 <BR>[Called By]<UL><LI><a href="#[6f]">&gt;&gt;</a>&nbsp;&nbsp;&nbsp;main
@@ -1044,19 +1045,19 @@ Global Symbols
 <BR>[Calls]<UL><LI><a href="#[a4]">&gt;&gt;</a>&nbsp;&nbsp;&nbsp;HAL_GetTick
 <LI><a href="#[a5]">&gt;&gt;</a>&nbsp;&nbsp;&nbsp;FLASH_SetErrorCode
 </UL>
-<BR>[Called By]<UL><LI><a href="#[a1]">&gt;&gt;</a>&nbsp;&nbsp;&nbsp;HAL_FLASH_Program
+<BR>[Called By]<UL><LI><a href="#[a2]">&gt;&gt;</a>&nbsp;&nbsp;&nbsp;HAL_FLASH_Program
 <LI><a href="#[a0]">&gt;&gt;</a>&nbsp;&nbsp;&nbsp;HAL_FLASHEx_Erase
 </UL>
 
-<P><STRONG><a name="[a6]"></a>FirmwareUpdate</STRONG> (Thumb, 326 bytes, Stack size 1072 bytes, bootloard.o(i.FirmwareUpdate))
-<BR><BR>[Stack]<UL><LI>Max Depth = 1576 + Unknown Stack Size
+<P><STRONG><a name="[a6]"></a>FirmwareUpdate</STRONG> (Thumb, 396 bytes, Stack size 1080 bytes, bootloard.o(i.FirmwareUpdate))
+<BR><BR>[Stack]<UL><LI>Max Depth = 1584 + Unknown Stack Size
 <LI>Call Chain = FirmwareUpdate &rArr; write_data_to_flash_app &rArr; log_impl &rArr; __2snprintf &rArr; _printf_char_common &rArr; __printf
 </UL>
 <BR>[Calls]<UL><LI><a href="#[a8]">&gt;&gt;</a>&nbsp;&nbsp;&nbsp;HAL_UART_Transmit
 <LI><a href="#[a9]">&gt;&gt;</a>&nbsp;&nbsp;&nbsp;HAL_UART_Receive
 <LI><a href="#[aa]">&gt;&gt;</a>&nbsp;&nbsp;&nbsp;log_impl
 <LI><a href="#[9f]">&gt;&gt;</a>&nbsp;&nbsp;&nbsp;HAL_FLASH_Unlock
-<LI><a href="#[a2]">&gt;&gt;</a>&nbsp;&nbsp;&nbsp;HAL_FLASH_Lock
+<LI><a href="#[a1]">&gt;&gt;</a>&nbsp;&nbsp;&nbsp;HAL_FLASH_Lock
 <LI><a href="#[a7]">&gt;&gt;</a>&nbsp;&nbsp;&nbsp;__aeabi_memclr4
 <LI><a href="#[ab]">&gt;&gt;</a>&nbsp;&nbsp;&nbsp;write_data_to_flash_app
 </UL>
@@ -1075,13 +1076,13 @@ Global Symbols
 <LI><a href="#[9d]">&gt;&gt;</a>&nbsp;&nbsp;&nbsp;WriteUpgradeInfo
 </UL>
 
-<P><STRONG><a name="[a2]"></a>HAL_FLASH_Lock</STRONG> (Thumb, 14 bytes, Stack size 0 bytes, stm32f1xx_hal_flash.o(i.HAL_FLASH_Lock))
+<P><STRONG><a name="[a1]"></a>HAL_FLASH_Lock</STRONG> (Thumb, 14 bytes, Stack size 0 bytes, stm32f1xx_hal_flash.o(i.HAL_FLASH_Lock))
 <BR><BR>[Called By]<UL><LI><a href="#[a6]">&gt;&gt;</a>&nbsp;&nbsp;&nbsp;FirmwareUpdate
 <LI><a href="#[9e]">&gt;&gt;</a>&nbsp;&nbsp;&nbsp;ClearUpgradeFlag
 <LI><a href="#[9d]">&gt;&gt;</a>&nbsp;&nbsp;&nbsp;WriteUpgradeInfo
 </UL>
 
-<P><STRONG><a name="[a1]"></a>HAL_FLASH_Program</STRONG> (Thumb, 120 bytes, Stack size 40 bytes, stm32f1xx_hal_flash.o(i.HAL_FLASH_Program))
+<P><STRONG><a name="[a2]"></a>HAL_FLASH_Program</STRONG> (Thumb, 120 bytes, Stack size 40 bytes, stm32f1xx_hal_flash.o(i.HAL_FLASH_Program))
 <BR><BR>[Stack]<UL><LI>Max Depth = 56<LI>Call Chain = HAL_FLASH_Program &rArr; FLASH_WaitForLastOperation
 </UL>
 <BR>[Calls]<UL><LI><a href="#[a3]">&gt;&gt;</a>&nbsp;&nbsp;&nbsp;FLASH_WaitForLastOperation
@@ -1293,7 +1294,8 @@ Global Symbols
 </UL>
 <BR>[Calls]<UL><LI><a href="#[c4]">&gt;&gt;</a>&nbsp;&nbsp;&nbsp;__aeabi_memcpy4
 </UL>
-<BR>[Called By]<UL><LI><a href="#[9b]">&gt;&gt;</a>&nbsp;&nbsp;&nbsp;CheckVersion
+<BR>[Called By]<UL><LI><a href="#[9e]">&gt;&gt;</a>&nbsp;&nbsp;&nbsp;ClearUpgradeFlag
+<LI><a href="#[9b]">&gt;&gt;</a>&nbsp;&nbsp;&nbsp;CheckVersion
 </UL>
 
 <P><STRONG><a name="[a]"></a>SVC_Handler</STRONG> (Thumb, 2 bytes, Stack size 0 bytes, stm32f1xx_it.o(i.SVC_Handler))
@@ -1328,8 +1330,8 @@ Global Symbols
 <BR><BR>[Stack]<UL><LI>Max Depth = 96<LI>Call Chain = WriteUpgradeInfo &rArr; HAL_FLASH_Program &rArr; FLASH_WaitForLastOperation
 </UL>
 <BR>[Calls]<UL><LI><a href="#[9f]">&gt;&gt;</a>&nbsp;&nbsp;&nbsp;HAL_FLASH_Unlock
-<LI><a href="#[a1]">&gt;&gt;</a>&nbsp;&nbsp;&nbsp;HAL_FLASH_Program
-<LI><a href="#[a2]">&gt;&gt;</a>&nbsp;&nbsp;&nbsp;HAL_FLASH_Lock
+<LI><a href="#[a2]">&gt;&gt;</a>&nbsp;&nbsp;&nbsp;HAL_FLASH_Program
+<LI><a href="#[a1]">&gt;&gt;</a>&nbsp;&nbsp;&nbsp;HAL_FLASH_Lock
 <LI><a href="#[a0]">&gt;&gt;</a>&nbsp;&nbsp;&nbsp;HAL_FLASHEx_Erase
 </UL>
 <BR>[Called By]<UL><LI><a href="#[9b]">&gt;&gt;</a>&nbsp;&nbsp;&nbsp;CheckVersion
@@ -1377,8 +1379,8 @@ Global Symbols
 <BR>[Called By]<UL><LI><a href="#[6f]">&gt;&gt;</a>&nbsp;&nbsp;&nbsp;main
 </UL>
 
-<P><STRONG><a name="[6f]"></a>main</STRONG> (Thumb, 102 bytes, Stack size 16 bytes, main.o(i.main))
-<BR><BR>[Stack]<UL><LI>Max Depth = 1592 + Unknown Stack Size
+<P><STRONG><a name="[6f]"></a>main</STRONG> (Thumb, 124 bytes, Stack size 16 bytes, main.o(i.main))
+<BR><BR>[Stack]<UL><LI>Max Depth = 1600 + Unknown Stack Size
 <LI>Call Chain = main &rArr; FirmwareUpdate &rArr; write_data_to_flash_app &rArr; log_impl &rArr; __2snprintf &rArr; _printf_char_common &rArr; __printf
 </UL>
 <BR>[Calls]<UL><LI><a href="#[cd]">&gt;&gt;</a>&nbsp;&nbsp;&nbsp;log_init
@@ -1401,7 +1403,7 @@ Global Symbols
 <LI>Call Chain = write_data_to_flash_app &rArr; log_impl &rArr; __2snprintf &rArr; _printf_char_common &rArr; __printf
 </UL>
 <BR>[Calls]<UL><LI><a href="#[aa]">&gt;&gt;</a>&nbsp;&nbsp;&nbsp;log_impl
-<LI><a href="#[a1]">&gt;&gt;</a>&nbsp;&nbsp;&nbsp;HAL_FLASH_Program
+<LI><a href="#[a2]">&gt;&gt;</a>&nbsp;&nbsp;&nbsp;HAL_FLASH_Program
 <LI><a href="#[a0]">&gt;&gt;</a>&nbsp;&nbsp;&nbsp;HAL_FLASHEx_Erase
 </UL>
 <BR>[Called By]<UL><LI><a href="#[a6]">&gt;&gt;</a>&nbsp;&nbsp;&nbsp;FirmwareUpdate
@@ -1477,7 +1479,7 @@ Local Symbols
 </UL>
 
 <P><STRONG><a name="[af]"></a>FLASH_Program_HalfWord</STRONG> (Thumb, 20 bytes, Stack size 0 bytes, stm32f1xx_hal_flash.o(i.FLASH_Program_HalfWord))
-<BR><BR>[Called By]<UL><LI><a href="#[a1]">&gt;&gt;</a>&nbsp;&nbsp;&nbsp;HAL_FLASH_Program
+<BR><BR>[Called By]<UL><LI><a href="#[a2]">&gt;&gt;</a>&nbsp;&nbsp;&nbsp;HAL_FLASH_Program
 </UL>
 
 <P><STRONG><a name="[a5]"></a>FLASH_SetErrorCode</STRONG> (Thumb, 84 bytes, Stack size 0 bytes, stm32f1xx_hal_flash.o(i.FLASH_SetErrorCode))

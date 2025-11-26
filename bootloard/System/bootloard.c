@@ -6,7 +6,7 @@ static upgrade_info_t init_version = {
   0,
   {0xffffffff, 0xffffffff, 0xffffffff, 0xffffffff}
 };
-uint32_t version[2] = {0};
+uint8_t version[2] = {0};
 void ReadUpgradeInfo(void)
 {
   // 读取升级和版本信息
@@ -50,8 +50,8 @@ void CheckVersion(void)
     WriteUpgradeInfo(&init_version);
     ReadUpgradeInfo();
   }
-  version[0] = g_upgrade_info.h_version;
-  version[1] = g_upgrade_info.l_version;
+  version[0] = (uint8_t)g_upgrade_info.h_version;
+  version[1] = (uint8_t)g_upgrade_info.l_version;
 }
 
 //清除升级标志并保留版本信息
@@ -75,9 +75,9 @@ void ClearUpgradeFlag(void)
 
     // 擦除后重新写入 upgrade_info（flag = 0）
     upgrade_info_t info;
-    info.upgrade_flag = 0x00000000;   // ✔ 代表不升级
-    info.h_version     = version[0];
-    info.l_version     = version[1];
+    info.upgrade_flag = 0x00000000;   // 代表不升级
+    info.h_version     = (uint32_t)version[0];
+    info.l_version     = (uint32_t)version[1];
     info.reserved[0]  = 0xFFFFFFFF;
     info.reserved[1]  = 0xFFFFFFFF;
     info.reserved[2]  = 0xFFFFFFFF;
@@ -94,6 +94,7 @@ void ClearUpgradeFlag(void)
     }
 
     HAL_FLASH_Lock();
+    ReadUpgradeInfo();
 }
 
 
@@ -148,6 +149,7 @@ void FirmwareUpdate(void)
 {
   uint8_t x = 'x';
   uint8_t y = 'y';
+  uint8_t v = 'v';
   uint32_t current_app_size = 0;
   uint8_t block[MAX_BLOCK_SIZE] = {0};
   uint8_t app_kb[2] = {0};
@@ -155,6 +157,11 @@ void FirmwareUpdate(void)
   HAL_StatusTypeDef state;
   do
   {
+    HAL_UART_Transmit(&huart2, &v, 1, 1000);
+    state = HAL_UART_Receive(&huart2, version, 2, 5000);      //接收版本信息
+    if(state != HAL_OK) {LOG_ERROR("version receive timeout!!!"); break;}
+    LOG_INFO("Update Version: %d.%d", version[0], version[1]);
+
     HAL_UART_Transmit(&huart2, &x, 1, 1000);
     state = HAL_UART_Receive(&huart2, app_kb, 2, 5000);      //接收应用程序大小单位为kb 
     if(state != HAL_OK) {LOG_ERROR("app_kb receive timeout!!!"); break;}
