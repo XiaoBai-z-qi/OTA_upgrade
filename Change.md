@@ -45,4 +45,11 @@
 - 删除application工程（暂时）
 - 更改bin文件夹为appbin并修改内容
 - esp8266工程里实现联网与获取电脑服务器stm32的版本号和指定固件的块
+- appbin文件夹修改
+  - 添加==config.json== ==app.bin== ==crc.bin==文件
+
+- esp8266工程
+  - 添加ArduinoJson库并使用
+  - 新建==ota.cpp== ==ota.h==文件
+  - 添加获取json里版本号和固件大小函数
 
