@@ -7,5 +7,5 @@
 
 
 void WiFiInit();
-void readconfig();
+void readconfig(uint8_t* hversion, uint8_t* lversion, uint8_t* h_kb, uint8_t* l_kb);
 #endif

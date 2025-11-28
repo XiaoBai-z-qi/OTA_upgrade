@@ -17,7 +17,7 @@ void WiFiInit()
 }
 
 
-void readconfig()
+void readconfig(uint8_t* hversion, uint8_t* lversion, uint8_t* h_kb, uint8_t* l_kb)
 {
     if(WiFi.status() == WL_CONNECTED)
     {
@@ -38,17 +38,20 @@ void readconfig()
                 const char* version = doc["version"];
                 int kb = doc["kb"];
 
-                int major = 0;
-                int minor = 0;
+                uint8_t major = 0;
+                uint8_t minor = 0;
 
                 // 使用 sscanf 拆分数字
                 sscanf(version, "%d.%d", &major, &minor);
-
-                Serial.printf("主版本号: %d\n", major);
-                Serial.printf("次版本号: %d\n", minor);
-                Serial.printf("kb: %d\n", kb);
+                *hversion = major;
+                *lversion = minor;
+                *h_kb = (kb >> 8) & 0xff;
+                *l_kb = kb & 0xff;
             }else{
-                Serial.printf("HTTP GET %d\n", httpCode);
+                *hversion = 0;
+                *lversion = 0;
+                *h_kb = 0;
+                *l_kb = 0;
             }
         }
 
