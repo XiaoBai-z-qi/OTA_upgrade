@@ -67,3 +67,4 @@
 ### Added
 
 - application工程
+- 按键接收版本号和固件大小

@@ -7,7 +7,7 @@ void setup() {
   WiFiInit();
 
 }
-uint8_t xixi = 0xaa;
+
 void loop() {
   if(Serial.available() > 0)
   {
