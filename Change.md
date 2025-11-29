@@ -67,4 +67,13 @@
 ### Added
 
 - application工程
+
 - 按键接收版本号和固件大小
+
+- ### ==修改bootloard跳转application不能进入中断的bug== 
+
+- 完成检查更新和确定更新的逻辑
+
+- ### ==目前完成获取服务器版本号和固件大小写入flash，确定更新后软件复位到bootloard==
+
+ 

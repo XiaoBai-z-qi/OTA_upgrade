@@ -204,9 +204,31 @@ void FirmwareUpdate(void)
 
 void goto_application(void)
 {
-  void (*app_reset_handler)(void) = (void (*)(void))(*((volatile uint32_t*)(ETX_APP_START_ADDRESS + 4U)));
+		uint32_t app_start_addr = *(volatile uint32_t*)ETX_APP_START_ADDRESS;
+    uint32_t app_reset_handler_addr = *(volatile uint32_t*)(ETX_APP_START_ADDRESS + 4U);
+    void (*app_reset_handler)(void) = (void (*)(void))app_reset_handler_addr;
 
-  __set_MSP(*(volatile uint32_t*) ETX_APP_START_ADDRESS);
-	HAL_GPIO_WritePin(GPIOA, GPIO_PIN_15, GPIO_PIN_RESET);
-	app_reset_handler();
+    // 关中断
+    __disable_irq();
+
+    // 关闭SysTick
+    SysTick->CTRL = 0;
+
+    // 清除所有中断pending位
+    for (int i = 0; i < 8; i++)
+        NVIC->ICER[i] = 0xFFFFFFFF;
+    for (int i = 0; i < 8; i++)
+        NVIC->ICPR[i] = 0xFFFFFFFF;
+
+    // 重映射 Vector Table 到 App
+    SCB->VTOR = ETX_APP_START_ADDRESS;
+
+    // 设置 MSP
+    __set_MSP(app_start_addr);
+
+    // 开中断
+    __enable_irq();
+
+    // 跳到 App reset handler
+    app_reset_handler();
 }

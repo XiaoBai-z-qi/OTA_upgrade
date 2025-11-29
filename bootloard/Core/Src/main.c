@@ -123,7 +123,7 @@ int main(void)
 	log_init(&huart1);
   
   CheckVersion();
-  LOG_INFO("Version:%d.%d", g_upgrade_info.h_version, g_upgrade_info.l_version);
+//  LOG_INFO("Version:%d.%d", g_upgrade_info.h_version, g_upgrade_info.l_version);
 
   if(g_upgrade_info.upgrade_flag == 0xaaaaaaaa)
   {

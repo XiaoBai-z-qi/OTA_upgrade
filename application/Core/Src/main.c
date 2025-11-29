@@ -94,6 +94,7 @@ int main(void)
   MX_TIM4_Init();
   /* USER CODE BEGIN 2 */
   log_init(&huart1);
+	LOG_INFO("This is application");
   HAL_TIM_Base_Start_IT(&htim4);
   ckUpdateInit();
   /* USER CODE END 2 */
@@ -102,6 +103,8 @@ int main(void)
   /* USER CODE BEGIN WHILE */
   while (1)
   {
+    HAL_GPIO_TogglePin(GPIOB, GPIO_PIN_15);
+    HAL_Delay(500);
     /* USER CODE END WHILE */
 
     /* USER CODE BEGIN 3 */
