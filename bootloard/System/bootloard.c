@@ -150,6 +150,7 @@ void FirmwareUpdate(void)
   uint8_t x = 'x';
   uint8_t y = 'y';
   uint8_t v = 'v';
+	uint8_t o = 'o';
   uint32_t current_app_size = 0;
   uint8_t block[MAX_BLOCK_SIZE] = {0};
   uint8_t app_kb[2] = {0};
@@ -157,14 +158,16 @@ void FirmwareUpdate(void)
   HAL_StatusTypeDef state;
   do
   {
-    HAL_UART_Transmit(&huart2, &v, 1, 1000);
-    state = HAL_UART_Receive(&huart2, version, 2, 5000);      //接收版本信息
-    if(state != HAL_OK) {LOG_ERROR("version receive timeout!!!"); break;}
-    LOG_INFO("Update Version: %d.%d", version[0], version[1]);
+//    HAL_UART_Transmit(&huart2, &v, 1, 1000);
+//    state = HAL_UART_Receive(&huart2, version, 2, 5000);      //接收版本信息
+//    if(state != HAL_OK) {LOG_ERROR("version receive timeout!!!"); break;}
+//    LOG_INFO("Update Version: %d.%d", version[0], version[1]);
 
-    HAL_UART_Transmit(&huart2, &x, 1, 1000);
-    state = HAL_UART_Receive(&huart2, app_kb, 2, 5000);      //接收应用程序大小单位为kb 
-    if(state != HAL_OK) {LOG_ERROR("app_kb receive timeout!!!"); break;}
+//    HAL_UART_Transmit(&huart2, &x, 1, 1000);
+//    state = HAL_UART_Receive(&huart2, app_kb, 2, 5000);      //接收应用程序大小单位为kb 
+//    if(state != HAL_OK) {LOG_ERROR("app_kb receive timeout!!!"); break;}
+		app_kb[0] = (uint8_t)g_upgrade_info.reserved[0];
+		app_kb[1] = (uint8_t)g_upgrade_info.reserved[1];
     LOG_INFO("The application size is %d KB", app_kb[0] * 256 + app_kb[1]);
     app_size = 1024 * (app_kb[0] * 256 + app_kb[1]);
     //解锁flash
@@ -173,7 +176,7 @@ void FirmwareUpdate(void)
     while(1)
     {
       HAL_UART_Transmit(&huart2, &y, 1, 1000);
-      state = HAL_UART_Receive(&huart2, block, MAX_BLOCK_SIZE, 5000);   //接收1kb数据
+      state = HAL_UART_Receive(&huart2, block, MAX_BLOCK_SIZE, HAL_MAX_DELAY);   //接收1kb数据
       if(state != HAL_OK) {LOG_ERROR("block[%d] receive timeout!!!", (current_app_size / MAX_BLOCK_SIZE) + 1); break;}
       current_app_size += MAX_BLOCK_SIZE;
 
@@ -190,6 +193,7 @@ void FirmwareUpdate(void)
         break;
       }
     }
+		HAL_UART_Transmit(&huart2, &o, 1, 1000);
     
   } while (0);
   if(state != HAL_OK)

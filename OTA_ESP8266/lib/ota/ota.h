@@ -5,7 +5,8 @@
 #include <ESP8266HTTPClient.h>
 #include <ArduinoJson.h>
 
-
+#define BIN_CHUNK_SIZE 1024
 void WiFiInit();
 void readconfig(uint8_t* hversion, uint8_t* lversion, uint8_t* h_kb, uint8_t* l_kb);
+void readbin(uint8_t *buff, uint16_t count);
 #endif
